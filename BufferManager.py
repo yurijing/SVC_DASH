@@ -10,28 +10,17 @@ import http.client, httplib2, urllib.request
 import subprocess, sys
 import re
 import os.path
-from time import sleep
 import time
 import glob
 import queue
 import threading
-from multiprocessing import Process
-import datetime
 from logger import *
 from log_utils import timestamp
-import time
-from threading import Thread
-try:
-    from MplayerControl import MplayerControl
-except ImportError:
-    MplayerControl = None
-import queue
 
 try:
     import wget
 except ImportError:
     wget = None
-from strategy.context import StrategyContext
 class BufferManager:
     """DASH segment download manager and playback coordinator.
 
@@ -44,7 +33,6 @@ class BufferManager:
         cache_match: Cache path pattern for downloaded files.
         buffer_length: Maximum number of segments to buffer (default 10).
         buffer_list: Thread-safe queue holding pending segments.
-        mplayer: MplayerControl instance for video playback.
     """
 
     def __init__(self, base_url, cache_match):
@@ -61,10 +49,6 @@ class BufferManager:
         self.speed=0
         self.lock = threading.RLock()
         self.logger_buf_layer = []
-        if MplayerControl is not None:
-            self.mplayer = MplayerControl(self.logger_buf_layer)
-        else:
-            self.mplayer = None
 
 
     def download_init_segment(self, directory, dom):
@@ -124,125 +108,6 @@ class BufferManager:
         source_url = list_url[seg_id][layer_id]
         segment,speed,time_interval = self.download_wget(source_url)
         return segment, speed, time_interval
-
-    def _init_context(self, parse_result, strategy_name, total_seq):
-        """Initialize the strategy context.
-
-        Args:
-            parse_result: Parsed MPD data dict.
-            strategy_name: Strategy name string (default "fixed").
-            total_seq: Total number of segments.
-
-        Returns:
-            StrategyContext instance.
-        """
-        if strategy_name is None:
-            strategy_name = "fixed"
-        return StrategyContext(
-            name=strategy_name,
-            thresholds=parse_result["threshold"],
-            buffer_length=self.buffer_length,
-            total_seq=total_seq,
-        )
-
-    def _start_playback(self, video_name, out_name, frame_rate, parse_result,
-                        total_seq, durations):
-        """Start the video playback thread for the first segment."""
-        t1 = datetime.datetime.now()
-        message = str(t1) + "\nStart playing!"
-        logging.info(message)
-        thread1 = Thread(target=self.mplayer.play_video,
-                         args=(out_name, frame_rate,
-                               parse_result["width"], parse_result["height"],
-                               total_seq, durations[0], self.buffer_list))
-        thread1.start()
-
-    def _wait_for_completion(self, ctx):
-        """Wait for playback to finish and finalize strategy context."""
-        while self.mplayer and self.mplayer.thread_live:
-            sleep(1)
-        self.write_list_to_file("layerRecord.txt", self.logger_buf_layer)
-        ctx.finalize()
-
-    def download_all_segments(self, video_name, parse_result, strategy_name=None):
-        """Download all segments and coordinate playback (main entry point).
-
-        Iterates through all segments, using the adaptive strategy to
-        select quality layers, downloading and merging SVC data, then
-        starts playback and waits for completion.
-
-        Args:
-            video_name: Name of the video (used for file paths).
-            parse_result: Parsed MPD data dict from ParseMpd.parse_mpd().
-            strategy_name: Optional strategy name. Defaults to "fixed".
-
-        Returns:
-            None. Results are written to layerRecord.txt and strategy
-            convergence data is saved.
-        """
-        threshold = parse_result["threshold"]
-        py_t = [threshold[0]/8/1024,threshold[1]/8/1024,threshold[2]/8/1024,threshold[3]/8/1024]
-        list_url = parse_result["list_url"]
-        durations = parse_result["durations"]
-        total_seq = parse_result["total_seq"]
-        frame_rate = parse_result["frame_rate"]
-        out_name = video_name + "/" + "out_" + video_name + ".264"
-
-        ctx = self._init_context(parse_result, strategy_name, total_seq)
-
-        #download initsegment
-        segment_base, speed, time_interval = self.download_init_segment(video_name, parse_result["data"])
-        t0 = datetime.datetime.now()
-        message = str(t0) + "\nStart processing!"
-        selected_layer = 0
-        pre_selected_layer = 0 #  old EL choose
-        for i in range(0,total_seq):
-            message = (timestamp() + ":\n==================================================\n" +
-                       "Start handling segment " + str(i) + ", previous reference speed is: " + str(
-                speed / 1024 / 8) +
-                       "KB/s")
-            logging.info(message)
-            '''
-            If there is "exit" in the last line of the log file, stop download and stop the software.
-            '''
-            if self.mplayer is None:
-                break
-            print(self.mplayer.thread_live)
-            if self.mplayer.thread_live == False:
-                message = timestamp() + ": Stop downloading"
-                logging.info(message)
-                print("exit ---")
-                break
-            selected_layer = ctx.select_layer(i, speed, self.buffer_list.qsize(), threshold)
-            message = timestamp() + ": SelectedLayer is: " + str(selected_layer)
-            file_list, speed_tmp, time_tmp = self.download_segment(selected_layer,i,list_url)
-            speed = speed_tmp
-            self.logger_buf_layer.append([speed/8/1024,selected_layer,self.buffer_list.qsize(),threshold[selected_layer]/8/1024])
-
-            '''check for very small interval (in case the file size is very small it will mess up the bandwidth calculation)'''
-            if time_tmp > 0.05:
-                speed = speed_tmp
-            else:
-                message = timestamp() + ": file size is too small!"
-                logging.info(message)
-            message = timestamp() + ": Finish download segment " + str(i)
-            logging.info(message)
-            self.generate_h264(video_name,i,file_list,segment_base,out_name)
-            message = (timestamp() + ": Finish handling segment " + str(i) +
-                       "\n==================================================")
-            logging.info(message)
-            cur_segment = {}
-            cur_segment["selected_layer"] = selected_layer;
-            cur_segment["duration"] = durations[selected_layer];
-            self.buffer_list.put(cur_segment)
-            ctx.update_state(self.buffer_list.qsize(), speed)
-            if i == 0:
-                self._start_playback(video_name, out_name, frame_rate,
-                                     parse_result, total_seq, durations)
-
-        self._wait_for_completion(ctx)
-
-
 
     def generate_h264(self, video_name, i, file_list, segment_base, out_name):
         """Merge SVC layer files into a single H.264 segment via svc_merge.
