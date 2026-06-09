@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project: generated video files
+*.264
+*.svc
+BBB-I-*/
+out_*/
+
+# Project: logs
+log/
+
+# Project: test output
+vt_test/
+
+# Project: dataset (downloaded from server)
+dataset/
+
+# Project: temp
+zzz_v/
+
+# Project: Claude Code (local config only)
+.claude/
+
+# Project: skill lock file
+skills-lock.json

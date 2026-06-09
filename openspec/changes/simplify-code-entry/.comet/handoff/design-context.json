@@ -1,0 +1,13 @@
+{
+  "change": "simplify-code-entry",
+  "phase": "design",
+  "mode": "compact",
+  "canonical_spec": "openspec",
+  "generated_by": "comet-handoff.sh",
+  "context_hash": "fd018e9a52bcf6334522e01db3472e02fbeaca8315e0b666a08a2a1916c47387",
+  "files": [
+    { "path": "openspec/changes/simplify-code-entry/proposal.md", "sha256": "db88bf2927d9583748d2b25f5e6ecdeea8944fa678c1542156fc1bf8c262ec91" },
+    { "path": "openspec/changes/simplify-code-entry/design.md", "sha256": "b72760847a700062cc250883b25a3b532c8dde98bfa3d4b40a84ebc50bc2b63d" },
+    { "path": "openspec/changes/simplify-code-entry/tasks.md", "sha256": "e9da044660c4dfd472a8c0cd98b225901530ab9c8744a09413a57dc203ab752b" }
+  ]
+}
