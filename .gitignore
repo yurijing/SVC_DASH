@@ -43,6 +43,10 @@ zzz_v/
 # Project: Claude Code (local config only)
 .claude/
 
+# Project: design docs and specs (local only)
+docs/
+openspec/
+
 # Project: skill lock file
 skills-lock.json
 .tmp/
