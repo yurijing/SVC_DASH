@@ -1,7 +1,7 @@
 ---
 change: simplify-code-entry
 design-doc: docs/superpowers/specs/2026-06-09-simplify-code-entry-design.md
-base-ref: null (no initial commit in repository)
+base-ref: dbd62febe0f3cbee2a1c7e108830e7b68b62da01
 ---
 
 # 简化代码入口与整体逻辑 — Implementation Plan
