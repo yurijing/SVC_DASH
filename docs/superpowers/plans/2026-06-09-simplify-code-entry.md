@@ -2,6 +2,7 @@
 change: simplify-code-entry
 design-doc: docs/superpowers/specs/2026-06-09-simplify-code-entry-design.md
 base-ref: dbd62febe0f3cbee2a1c7e108830e7b68b62da01
+archived-with: 2026-06-10-simplify-code-entry
 ---
 
 # 简化代码入口与整体逻辑 — Implementation Plan
@@ -14,6 +15,7 @@ base-ref: dbd62febe0f3cbee2a1c7e108830e7b68b62da01
 
 **Tech Stack:** Python 3.9+, Bash, git
 
+archived-with: 2026-06-10-simplify-code-entry
 ---
 
 ## File Map
@@ -34,6 +36,7 @@ base-ref: dbd62febe0f3cbee2a1c7e108830e7b68b62da01
 | MODIFY | `run.sh` | Fix hardcoded path |
 | MODIFY | `dash_qt/simple_main.py` | Remove dead-process kill logic (optional, keep if useful) |
 
+archived-with: 2026-06-10-simplify-code-entry
 ---
 
 ### Task 1: Delete deprecated files (Phase 1)
@@ -101,6 +104,7 @@ git commit -m "chore: delete 10 deprecated/duplicate files
 Part of: simplify-code-entry"
 ```
 
+archived-with: 2026-06-10-simplify-code-entry
 ---
 
 ### Task 2: Fix run.sh
@@ -151,6 +155,7 @@ $(dirname \"$0\") for portable project root detection.
 Part of: simplify-code-entry"
 ```
 
+archived-with: 2026-06-10-simplify-code-entry
 ---
 
 ### Task 3: Clean BufferManager dead code
@@ -245,6 +250,7 @@ download_segment_layer, generate_h264, download_wget.
 Part of: simplify-code-entry"
 ```
 
+archived-with: 2026-06-10-simplify-code-entry
 ---
 
 ### Task 4: Run tests and verify
@@ -284,6 +290,7 @@ print('dash_qt package imports: OK')
 
 No code changes expected — this is verification only. Only commit if Step 2 or Step 3 required import fixes.
 
+archived-with: 2026-06-10-simplify-code-entry
 ---
 
 ### Task 5: Update tasks.md checkboxes

@@ -12,7 +12,7 @@ verification_report: docs/superpowers/reports/2026-06-09-simplify-code-entry-ver
 branch_status: handled
 created_at: 2026-06-09
 verified_at: 2026-06-10
-archived: false
+archived: true
 build_command: python3 -m pytest tests/ -v --tb=short
 handoff_context: openspec/changes/simplify-code-entry/.comet/handoff/design-context.json
 handoff_hash: fd018e9a52bcf6334522e01db3472e02fbeaca8315e0b666a08a2a1916c47387

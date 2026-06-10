@@ -2,6 +2,8 @@
 comet_change: simplify-code-entry
 role: technical-design
 canonical_spec: openspec
+archived-with: 2026-06-10-simplify-code-entry
+status: final
 ---
 
 # 简化代码入口与整体逻辑 — Technical Design
