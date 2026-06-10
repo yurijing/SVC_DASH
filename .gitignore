@@ -45,3 +45,4 @@ zzz_v/
 
 # Project: skill lock file
 skills-lock.json
+.tmp/
