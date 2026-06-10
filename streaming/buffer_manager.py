@@ -14,8 +14,8 @@ import time
 import glob
 import queue
 import threading
-from logger import *
-from log_utils import timestamp
+from utils.logger import *
+from utils.log_utils import timestamp
 
 try:
     import wget
@@ -123,7 +123,7 @@ class BufferManager:
         """
 
         try:
-            command = ["python3", "svc_merge.py"]
+            command = ["python3", "streaming/svc_merge.py"]
             output_seg_name = video_name + "/" + "out_" + video_name + "_seg" + str(i) + ".264"
             command.append(output_seg_name)
             command.append(segment_base)

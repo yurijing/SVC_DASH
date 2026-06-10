@@ -22,7 +22,7 @@ try:
         "/dev/null",       # tempLayer0
     ]
     _svc_dir = os.path.dirname(os.path.abspath(__file__))
-    _svc_path = os.path.join(_svc_dir, "..", "svc_merge.py")
+    _svc_path = os.path.join(_svc_dir, "..", "streaming", "svc_merge.py")
     with open(_svc_path, "r") as _f:
         exec(compile(_f.read(), "svc_merge.py", "exec"), _svc_ns)
 except Exception:

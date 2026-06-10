@@ -9,8 +9,8 @@ from xml.dom.minidom import parseString
 from urllib.parse import urlparse
 import re
 import datetime
-from logger import *
-from log_utils import timestamp
+from utils.logger import *
+from utils.log_utils import timestamp
 
 class ParseMpd:
     """Parser for DASH MPD XML files.

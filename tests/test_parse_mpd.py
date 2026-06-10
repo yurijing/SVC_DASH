@@ -10,7 +10,7 @@ class TestParseMpd:
     @pytest.fixture
     def parser(self):
         """Create a ParseMpd instance."""
-        from ParseMpd import ParseMpd
+        from streaming.parse_mpd import ParseMpd
         return ParseMpd()
 
     def test_parse_mpd_extracts_layers_and_thresholds(self, parser, sample_mpd_xml):

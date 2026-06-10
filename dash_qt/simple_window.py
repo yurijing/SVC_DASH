@@ -60,8 +60,8 @@ class SimpleWindow(QMainWindow):
 
     def _download(self,url,stn):
         try:
-            from ParseMpd import ParseMpd;from BufferManager import BufferManager
-            from strategy import create_strategy;from logger import initialize_logger
+            from streaming.parse_mpd import ParseMpd;from streaming.buffer_manager import BufferManager
+            from strategy import create_strategy;from utils.logger import initialize_logger
             p=ParseMpd();r=p.parse_mpd(url)
             tot=r['total_seq'];th=r['threshold'];vn=url.split('/')[-1].replace('.mpd','')
             self._w=int(r['width']);self._h=int(r['height']);self._fs=self._w*self._h*3
